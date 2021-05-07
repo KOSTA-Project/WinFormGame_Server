@@ -20,7 +20,7 @@ namespace DemonProgram
         {
             InitializeComponent();
         }
-        byte[] ServerIP = { 192, 168, 0, 52 };
+        byte[] ServerIP = { 192, 168, 0, 85 };
         string ServerPort = "9000";
 
         List<Socket> socks = new List<Socket>();
