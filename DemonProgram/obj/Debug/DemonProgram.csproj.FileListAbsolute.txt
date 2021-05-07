@@ -1,0 +1,13 @@
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\bin\Debug\DemonProgram.exe.config
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\bin\Debug\DemonProgram.exe
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\bin\Debug\DemonProgram.pdb
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\bin\Debug\MyLibrary.dll
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\bin\Debug\MyLibrary.pdb
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.csprojAssemblyReference.cache
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.Properties.Resources.resources
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.csproj.GenerateResource.cache
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.csproj.CoreCompileInputs.cache
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.csproj.CopyComplete
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.exe
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.pdb
+C:\Users\KOSTA\source\repos\Web_Game_Project\DemonProgram\DemonProgram\obj\Debug\DemonProgram.UserManager.resources
