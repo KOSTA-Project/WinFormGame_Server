@@ -24,19 +24,19 @@ namespace DemonProgram
         byte[] ServerIP = { 192, 168, 0, 85 };
         string ServerPort = "9000";
 
-        List<Player>[] players=null;
-        
-
+        //        List<Player>[] players=null;
+        Dictionary<string, string>[] game = null;
+        /*
         public class Player
         {
-            string session;
+            //string session;
             string id;
             bool alive;
             int state;
             string msg;
-            public Player(string s, string id, bool alive, int state, string msg)
+            public Player(string id, bool alive, int state, string msg)
             {
-                this.session = s;
+                //this.session = s;
                 this.id = id;
                 this.alive = alive;
                 this.state = state;
@@ -51,8 +51,9 @@ namespace DemonProgram
                 this.state = s;
             }
         }
+        */
 
-        // socks[0]: 현재 로그인만 된 유저  /  socks[1]: 1st게임 선택 / socks[2]: 2nd게임 선택
+
         List<Socket> socks = new List<Socket>();
         Socket sock = null;
         Socket sockServer = null;
@@ -78,11 +79,8 @@ namespace DemonProgram
 
         private void UserManager_Load(object sender, EventArgs e)
         {
-            players = new List<Player>[3];
-            for(int i = 0; i < 3; i++)
-            {
-                players[i] = new List<Player>();
-            }
+            game = new Dictionary<string, string>[3];
+            for (int i = 0; i < 3; i++) game[i] = new Dictionary<string, string>();
 
             sockServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -112,7 +110,8 @@ namespace DemonProgram
                         string[] sArr = sock.RemoteEndPoint.ToString().Split(':');
                         AddList(sock.RemoteEndPoint.ToString(), true);
                         socks.Add(sock);
-
+                        // 처음 받은 소켓에 메세지 바로 receive가능하면 players[0]에 넣기
+                        game[0].Add(sArr[1], "");
                     }
                     Thread.Sleep(100);
                 }
@@ -161,7 +160,7 @@ namespace DemonProgram
                     {
                         byte[] ba = new byte[ss.Available];
                         ss.Receive(ba);
-
+                        ReadProcess(ss, ba);
                     }
                 
                 }
@@ -170,11 +169,18 @@ namespace DemonProgram
         }
         void ReadProcess(Socket ss, byte[] ba)
         {
-            string str = Encoding.Default.GetString(ba);
+            string str = Encoding.Default.GetString(ba).Trim();
             string[] sa = str.Split(',');
-
-            
-
+            if (sa[2] == "1")
+            {
+                string state = sa[3];
+                if (game[0].ContainsKey(sa[0]) && state!="0")
+                {
+                    game[int.Parse(state)].Add(sa[0], str);
+                    AddList(str, true);
+                    game[0].Remove(sa[0]);
+                }
+            }
         }
         private void UserManager_FormClosing(object sender, FormClosingEventArgs e)
         {
