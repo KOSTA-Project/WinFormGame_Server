@@ -25,6 +25,7 @@ namespace DemonProgram
         string ServerPort = "9000";
 
         List<Player>[] players=null;
+        
 
         public class Player
         {
