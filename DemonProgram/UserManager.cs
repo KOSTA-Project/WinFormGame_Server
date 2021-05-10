@@ -203,7 +203,7 @@ namespace DemonProgram
                     // 방 번호 부여
                     str += idx.ToString() + "/";
                     game[state].Add(ss, str);
-                    AddList("게임 방 선택함: " + str, true);
+                    AddList("게임 방 선택: " + str, true);
                     game[0].Remove(ss);
                 }
             }
