@@ -28,6 +28,8 @@ namespace DemonProgram
         Dictionary<Socket, string>[] game = null;
 
         List<GameRoom>[] gamerooms = null;
+        
+
         public class GameRoom
         {
             Socket player1;
@@ -52,13 +54,6 @@ namespace DemonProgram
             }
         }
 
-        public class NumBaseball
-        {
-            Socket player1;
-            Socket player2;
-            int cnt;
-
-        }
         
         List<Socket> socks = new List<Socket>();
         Socket sock = null;
@@ -88,6 +83,7 @@ namespace DemonProgram
             game = new Dictionary<Socket, string>[3];
             for (int i = 0; i < 3; i++) game[i] = new Dictionary<Socket, string>();
 
+            
             gamerooms = new List<GameRoom>[2];
             for (int i = 0; i < 2; i++) gamerooms[i] = new List<GameRoom>();
 
@@ -118,8 +114,10 @@ namespace DemonProgram
                     {
                         string[] sArr = sock.RemoteEndPoint.ToString().Split(':');
                         AddList(sock.RemoteEndPoint.ToString(), true);
-                        socks.Add(sock);
-
+                        lock (socks)
+                        {
+                            socks.Add(sock);
+                        }
                         game[0].Add(sock,"");
                     }
                     Thread.Sleep(100);
@@ -182,7 +180,7 @@ namespace DemonProgram
             string str = Encoding.Default.GetString(ba).Trim();
             string[] sa = str.Split(',');
 
-            int state = int.Parse(sa[3]);       // 해당 소켓의 페이지 상태
+            int state = int.Parse(sa[3].Trim());       // 해당 소켓의 페이지 상태
 
             // 해당 연결이 살아있는지
             if (sa[2] == "1")
@@ -194,31 +192,32 @@ namespace DemonProgram
                     // gameroom 할당하기
                     bool isInRoom = false;
                     // 현재 있는 방 중 빈방 존재 시, 들어감
-                    for(int i = 0; i < gamerooms[state].Count; i++)
+                    for(int i = 0; i < gamerooms[state-1].Count; i++)
                     {
-                        if (gamerooms[state][i].isEmpty())
+                        if (gamerooms[state-1][i].isEmpty())
                         {
                             idx = i;
-                            gamerooms[state][i].addPlayer(ss);
+                            gamerooms[state-1][i].addPlayer(ss);
                             isInRoom = true;
                         }
                     }
                     // 빈 방이 없으면 새로운 방 들어가서 대기
                     if (!isInRoom)
                     {
-                        idx = gamerooms[state].Count;     // 새로 추가될 방의 번호
-                        gamerooms[state].Add(new GameRoom(ss));
+                        idx = gamerooms[state-1].Count;     // 새로 추가될 방의 번호
+                        gamerooms[state-1].Add(new GameRoom(ss));
+
                     }
                     // 방 번호 부여
                     str += idx.ToString() + "/";
-                    game[state].Add(ss, str);
+                    game[state-1].Add(ss, str);
                     AddList("게임 방 선택: " + str, true);
                     game[0].Remove(ss);
                 }
                 // 게임 내 정보 변화
                 else
                 {
-                    
+                    // state - , 
                 }
             }
             // 현재 연결 끊김
@@ -231,9 +230,6 @@ namespace DemonProgram
                     // 게임 방 상태 변경하기
                 }
             }
-
-
-
         }
         private void UserManager_FormClosing(object sender, FormClosingEventArgs e)
         {
