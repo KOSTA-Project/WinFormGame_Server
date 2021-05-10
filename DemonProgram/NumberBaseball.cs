@@ -70,7 +70,6 @@ namespace DemonProgram
             if (strike == nbLen) winner = sock;
 
             return $"{strike} strike, {ball} ball";
-
         }
 
         // 해당 내용은 웹에서 확인하는 걸로

@@ -35,11 +35,27 @@ namespace DemonProgram
             Socket player1;
             Socket player2;
             int cnt;
+            int[] numcnt = new int[10];
+            int answer = -1;
+
             public GameRoom(Socket p)
             {
                 player1 = p;
                 player2 = null;
                 cnt = 1;
+                
+                // for nb Rules
+                Random r = new Random();
+                answer = r.Next(0, 10000);
+                int val = answer;
+                int div = 1000;
+                while (div >= 1)
+                {
+                    int mok = val / div;
+                    numcnt[mok]++;
+                    val %= div;
+                    div /= 10;
+                }
             }
             public void addPlayer(Socket p)
             {
@@ -52,6 +68,31 @@ namespace DemonProgram
                 if (cnt < 2) return true;
                 else return false;
             }
+
+            public string nbResult(string msg)
+            {
+                int query = int.Parse(msg);
+                int ball = 0, strike = 0;
+                int div = 1000;
+                int ans = answer;
+                int[] nums = new int[10];
+                Array.Copy(numcnt, nums, 10);
+
+                while (div >= 1)
+                {
+                    int cur = query / div;
+                    if (ans / div == cur) strike++;
+                    if (nums[cur] > 0) ball++;
+                    nums[cur]--;
+                    query %= div;
+                    ans %= div;
+                    div /= 10;
+                }
+                ball -= strike;
+
+                return $"{strike} strike, {ball} ball";
+            }
+            
         }
 
         
@@ -84,7 +125,7 @@ namespace DemonProgram
             for (int i = 0; i < 3; i++) game[i] = new Dictionary<Socket, string>();
 
             
-            gamerooms = new List<GameRoom>[2];
+            gamerooms = new List<GameRoom>[3];
             for (int i = 0; i < 2; i++) gamerooms[i] = new List<GameRoom>();
 
             sockServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -192,32 +233,37 @@ namespace DemonProgram
                     // gameroom 할당하기
                     bool isInRoom = false;
                     // 현재 있는 방 중 빈방 존재 시, 들어감
-                    for(int i = 0; i < gamerooms[state-1].Count; i++)
+                    for(int i = 0; i < gamerooms[state].Count; i++)
                     {
-                        if (gamerooms[state-1][i].isEmpty())
+                        if (gamerooms[state][i].isEmpty())
                         {
                             idx = i;
-                            gamerooms[state-1][i].addPlayer(ss);
+                            gamerooms[state][i].addPlayer(ss);
                             isInRoom = true;
                         }
                     }
                     // 빈 방이 없으면 새로운 방 들어가서 대기
                     if (!isInRoom)
                     {
-                        idx = gamerooms[state-1].Count;     // 새로 추가될 방의 번호
-                        gamerooms[state-1].Add(new GameRoom(ss));
+                        idx = gamerooms[state].Count;     // 새로 추가될 방의 번호
+                        gamerooms[state].Add(new GameRoom(ss));
 
                     }
                     // 방 번호 부여
                     str += idx.ToString() + "/";
-                    game[state-1].Add(ss, str);
+                    game[state].Add(ss, str);
                     AddList("게임 방 선택: " + str, true);
                     game[0].Remove(ss);
                 }
                 // 게임 내 정보 변화
                 else
                 {
-                    // state - , 
+                    int roomidx = int.Parse(sa[4].Split('/')[0]);
+                    if (state == 2)
+                    {
+                        string ret = gamerooms[state][roomidx].nbResult(sa[4].Split('/')[1]);
+                        ss.Send(Encoding.Default.GetBytes(ret));
+                    }
                 }
             }
             // 현재 연결 끊김
