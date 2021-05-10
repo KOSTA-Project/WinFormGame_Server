@@ -26,34 +26,31 @@ namespace DemonProgram
 
         //        List<Player>[] players=null;
         Dictionary<string, string>[] game = null;
-        /*
-        public class Player
+        List<GameRoom>[] gamerooms = null;
+        public class GameRoom
         {
-            //string session;
-            string id;
-            bool alive;
-            int state;
-            string msg;
-            public Player(string id, bool alive, int state, string msg)
+            Socket player1;
+            Socket player2;
+            int cnt;
+            public GameRoom(Socket p)
             {
-                //this.session = s;
-                this.id = id;
-                this.alive = alive;
-                this.state = state;
-                this.msg = msg;
+                player1 = p;
+                player2 = null;
+                cnt = 1;
             }
-            public void logOut()
+            public void addPlayer(Socket p)
             {
-                this.alive = false;
+                if (player1 == null) player1 = p;
+                else player2 = p;
+                cnt++;
             }
-            public void chState(int s)
+            public bool isEmpty()
             {
-                this.state = s;
+                if (cnt < 2) return true;
+                else return false;
             }
         }
-        */
-
-
+        
         List<Socket> socks = new List<Socket>();
         Socket sock = null;
         Socket sockServer = null;
@@ -81,6 +78,9 @@ namespace DemonProgram
         {
             game = new Dictionary<string, string>[3];
             for (int i = 0; i < 3; i++) game[i] = new Dictionary<string, string>();
+
+            gamerooms = new List<GameRoom>[2];
+            for (int i = 0; i < 2; i++) gamerooms[i] = new List<GameRoom>();
 
             sockServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -173,12 +173,30 @@ namespace DemonProgram
             string[] sa = str.Split(',');
             if (sa[2] == "1")
             {
-                string state = sa[3];
-                if (game[0].ContainsKey(sa[0]) && state!="0")
+                int state = int.Parse(sa[3]);
+                if (game[0].ContainsKey(sa[0]) && state!=0)
                 {
-                    game[int.Parse(state)].Add(sa[0], str);
+                    game[state].Add(sa[0], str);
                     AddList(str, true);
                     game[0].Remove(sa[0]);
+
+                    // gameroom 할당하기
+                    bool isInRoom = false;
+                    // 현재 있는 방 중 빈방 존재 시, 들어감
+                    for(int i = 0; i < gamerooms[state].Count; i++)
+                    {
+                        if (gamerooms[state][i].isEmpty())
+                        {
+                            gamerooms[state][i].addPlayer(ss);
+                            isInRoom = true;
+                        }
+                    }
+                    // 빈 방이 없으면 새로운 방 들어가서 대기
+                    if (!isInRoom)
+                    {
+                        gamerooms[state].Add(new GameRoom(ss));
+                    }
+
                 }
             }
         }
