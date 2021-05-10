@@ -20,9 +20,38 @@ namespace DemonProgram
         {
             InitializeComponent();
         }
+        
         byte[] ServerIP = { 192, 168, 0, 85 };
         string ServerPort = "9000";
 
+        List<Player>[] players=null;
+
+        public class Player
+        {
+            string session;
+            string id;
+            bool alive;
+            int state;
+            string msg;
+            public Player(string s, string id, bool alive, int state, string msg)
+            {
+                this.session = s;
+                this.id = id;
+                this.alive = alive;
+                this.state = state;
+                this.msg = msg;
+            }
+            public void logOut()
+            {
+                this.alive = false;
+            }
+            public void chState(int s)
+            {
+                this.state = s;
+            }
+        }
+
+        // socks[0]: 현재 로그인만 된 유저  /  socks[1]: 1st게임 선택 / socks[2]: 2nd게임 선택
         List<Socket> socks = new List<Socket>();
         Socket sock = null;
         Socket sockServer = null;
@@ -42,16 +71,18 @@ namespace DemonProgram
             else
             {
                 if (isIn) inList.Items.Add(str);
-                else
-                {
-                    outList.Items.Add(str);
-                    inList.Items.Remove(str);
-                }
+                else outList.Items.Add(str);
             }
         }
 
         private void UserManager_Load(object sender, EventArgs e)
         {
+            players = new List<Player>[3];
+            for(int i = 0; i < 3; i++)
+            {
+                players[i] = new List<Player>();
+            }
+
             sockServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             threadServer = new Thread(ServerProcess);
@@ -80,6 +111,7 @@ namespace DemonProgram
                         string[] sArr = sock.RemoteEndPoint.ToString().Split(':');
                         AddList(sock.RemoteEndPoint.ToString(), true);
                         socks.Add(sock);
+
                     }
                     Thread.Sleep(100);
                 }
@@ -89,28 +121,60 @@ namespace DemonProgram
                 MessageBox.Show(e.Message);
             }
         }
+
+        public static bool isAlive(Socket ss)
+        {
+            if (ss == null) return false;
+            if (!ss.Connected) return false;
+
+            //1000마이크로초, 1ms초 동안 응답을 기다림
+            //SelectRead모드는 해당 소켓이 readable인지 
+            bool r1 = ss.Poll(1000, SelectMode.SelectRead);
+            //읽을 수 있는 데이터가 없으면
+            bool r2 = ss.Available == 0;
+            if (r1 && r2) return false;
+            else
+            {
+                //예외처리로 들어가면 연결 문제이므로 false반환 
+                try
+                {
+                    byte[] b = new byte[1]; b[0] = 0;
+                    //인자를 조건에 맞게 넣어, 발생가능한 오류들은 소켓 연결과 관련된 것들이 되도록
+                    int sentByteCount = ss.Send(new byte[1], 0, SocketFlags.OutOfBand);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
         void SessionProcess()
         {
             while (true)
             {
-                List<Socket> removelist = new List<Socket>();
-
                 foreach (Socket ss in socks)
                 {
-                    if (!mylib.isAlive(ss))
+                    //if (!isAlive(ss)) AddList(ss.RemoteEndPoint.ToString(), false);
+                    if (ss.Available > 0)
                     {
-                        removelist.Add(ss);
+                        byte[] ba = new byte[ss.Available];
+                        ss.Receive(ba);
+
                     }
-                }
-                foreach (Socket ss in removelist)
-                {
-                    AddList(ss.RemoteEndPoint.ToString(), false);
-                    socks.Remove(ss);
+                
                 }
                 Thread.Sleep(100);
             }
         }
+        void ReadProcess(Socket ss, byte[] ba)
+        {
+            string str = Encoding.Default.GetString(ba);
+            string[] sa = str.Split(',');
 
+            
+
+        }
         private void UserManager_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (sockServer != null) sockServer.Close();

@@ -34,10 +34,13 @@ namespace DemonProgram
             this.inList = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.outList = new System.Windows.Forms.ListBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.sbstatus = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -56,6 +59,7 @@ namespace DemonProgram
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.statusStrip1);
             this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.outList);
             this.splitContainer1.Size = new System.Drawing.Size(424, 444);
@@ -104,6 +108,21 @@ namespace DemonProgram
             this.outList.Size = new System.Drawing.Size(418, 196);
             this.outList.TabIndex = 1;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sbstatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 205);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(424, 22);
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // sbstatus
+            // 
+            this.sbstatus.Name = "sbstatus";
+            this.sbstatus.Size = new System.Drawing.Size(0, 17);
+            // 
             // UserManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -120,6 +139,8 @@ namespace DemonProgram
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -131,6 +152,8 @@ namespace DemonProgram
         private System.Windows.Forms.ListBox outList;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel sbstatus;
     }
 }
 
