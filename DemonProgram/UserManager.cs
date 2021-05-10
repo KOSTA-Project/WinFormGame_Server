@@ -51,6 +51,14 @@ namespace DemonProgram
                 else return false;
             }
         }
+
+        public class NumBaseball
+        {
+            Socket player1;
+            Socket player2;
+            int cnt;
+
+        }
         
         List<Socket> socks = new List<Socket>();
         Socket sock = null;
@@ -150,6 +158,7 @@ namespace DemonProgram
                 }
             }
         }
+
         void SessionProcess()
         {
             while (true)
@@ -205,6 +214,11 @@ namespace DemonProgram
                     game[state].Add(ss, str);
                     AddList("게임 방 선택: " + str, true);
                     game[0].Remove(ss);
+                }
+                // 게임 내 정보 변화
+                else
+                {
+                    
                 }
             }
             // 현재 연결 끊김

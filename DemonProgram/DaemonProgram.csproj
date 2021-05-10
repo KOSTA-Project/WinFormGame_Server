@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NumberBaseball.cs" />
     <Compile Include="UserManager.cs">
       <SubType>Form</SubType>
     </Compile>
