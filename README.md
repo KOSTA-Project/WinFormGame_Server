@@ -1,5 +1,8 @@
-# Web_Game_Project
-using ASP.NET.      
-- 오목 :
+# WinForm Game Server Program   
+
+using C# 
+
+
+
 - 숫자야구 : 
 - 끝말잇기 : 
