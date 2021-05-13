@@ -10,3 +10,15 @@ C:\Users\KOSTA\Desktop\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csproj.CoreCo
 C:\Users\KOSTA\Desktop\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csproj.CopyComplete
 C:\Users\KOSTA\Desktop\DAEMON\DemonProgram\obj\Debug\DemonProgram.exe
 C:\Users\KOSTA\Desktop\DAEMON\DemonProgram\obj\Debug\DemonProgram.pdb
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\bin\Debug\DemonProgram.exe.config
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\bin\Debug\DemonProgram.exe
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\bin\Debug\DemonProgram.pdb
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\bin\Debug\MyLibrary.pdb
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csprojAssemblyReference.cache
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DemonProgram.UserManager.resources
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DemonProgram.Properties.Resources.resources
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csproj.GenerateResource.cache
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csproj.CoreCompileInputs.cache
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DaemonProgram.csproj.CopyComplete
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DemonProgram.exe
+C:\Users\KOSTA\Desktop\miniProject\DAEMON\DemonProgram\obj\Debug\DemonProgram.pdb

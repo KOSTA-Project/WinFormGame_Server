@@ -57,6 +57,15 @@ namespace DemonProgram
                     div /= 10;
                 }
             }
+
+            public Socket getPlayer1()
+            {
+                return player1;
+            }
+            public Socket getPlayer2()
+            {
+                return player2;
+            }
             public void addPlayer(Socket p)
             {
                 if (player1 == null) player1 = p;
@@ -66,6 +75,7 @@ namespace DemonProgram
             public bool isEmpty()
             {
                 if (cnt < 2) return true;
+
                 else return false;
             }
 
@@ -126,7 +136,7 @@ namespace DemonProgram
 
             
             gamerooms = new List<GameRoom>[3];
-            for (int i = 0; i < 2; i++) gamerooms[i] = new List<GameRoom>();
+            for (int i = 0; i < 3; i++) gamerooms[i] = new List<GameRoom>();
 
             sockServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -151,6 +161,7 @@ namespace DemonProgram
                 {
                     sock = sockServer.Accept();
 
+
                     if (sock != null)
                     {
                         string[] sArr = sock.RemoteEndPoint.ToString().Split(':');
@@ -160,8 +171,10 @@ namespace DemonProgram
                             socks.Add(sock);
                         }
                         game[0].Add(sock,"");
+                        
+                       
                     }
-                    Thread.Sleep(100);
+                    Thread.Sleep(10);
                 }
             }
             catch (Exception e)
@@ -202,17 +215,24 @@ namespace DemonProgram
         {
             while (true)
             {
-                foreach (Socket ss in socks)
+                for(int i = 0; i<socks.Count; i++)
                 {
-                    //if (!isAlive(ss)) AddList(ss.RemoteEndPoint.ToString(), false);
-                    if (ss.Available > 0)
+                    if (socks[i].Available > 0)
                     {
-                        byte[] ba = new byte[ss.Available];
-                        ss.Receive(ba);
-                        ReadProcess(ss, ba);
+                        byte[] ba = new byte[socks[i].Available];
+                        socks[i].Receive(ba);
+                        // Socket send
+                        string[] packet = Encoding.Default.GetString(ba).Split(',');
+
+                        ReadProcess(socks[i], ba); //방만드는 작업.
+                        
+                        
+                        // 
+
+
                     }
-                
                 }
+ 
                 Thread.Sleep(100);
             }
         }
@@ -227,19 +247,21 @@ namespace DemonProgram
             if (sa[2] == "1")
             {
                 // 로그인 상태 --> 게임 선택한 상태
-                if (game[0].ContainsKey(ss) && state!=0)
+                if (game[0].ContainsKey(ss) && state != 0)
                 {
                     int idx = -1;
                     // gameroom 할당하기
                     bool isInRoom = false;
                     // 현재 있는 방 중 빈방 존재 시, 들어감
-                    for(int i = 0; i < gamerooms[state].Count; i++)
+                    for (int i = 0; i < gamerooms[state].Count; i++)
                     {
                         if (gamerooms[state][i].isEmpty())
                         {
                             idx = i;
                             gamerooms[state][i].addPlayer(ss);
                             isInRoom = true;
+
+                            // if(2)
                         }
                     }
                     // 빈 방이 없으면 새로운 방 들어가서 대기
@@ -254,17 +276,56 @@ namespace DemonProgram
                     game[state].Add(ss, str);
                     AddList("게임 방 선택: " + str, true);
                     game[0].Remove(ss);
-                }
-                // 게임 내 정보 변화
-                else
-                {
-                    int roomidx = int.Parse(sa[4].Split('/')[0]);
-                    if (state == 2)
+
+                    //ss.Send(Encoding.Default.GetBytes(str));
+
+                    if (!gamerooms[state][idx].isEmpty())
                     {
-                        string ret = gamerooms[state][roomidx].nbResult(sa[4].Split('/')[1]);
-                        ss.Send(Encoding.Default.GetBytes(ret));
+                        Socket target = gamerooms[state][idx].getPlayer1();
+                        Socket target2 = gamerooms[state][idx].getPlayer2();
+                        string s1 = game[state][target] + "gamestart";
+                        string s2 = game[state][target2] + "gamestart";
+
+                        if (state == 2)
+                        {
+
+                            Random r = new Random();
+                            string a = r.Next(0, 10000).ToString();
+                            s1 += "/" + a;
+                            s2 += "/" + a;
+                        }
+                        target.Send(Encoding.Default.GetBytes(s1));
+                        target2.Send(Encoding.Default.GetBytes(s2));
                     }
+
                 }
+                else if(sa[4].Split('/')[0]!="")
+                {
+                    int gameN = int.Parse(sa[3]);
+                    int rn = int.Parse(sa[4].Split('/')[0]);
+                    string msg = sa[4].Split('/')[1];
+                    
+                    Socket target = gamerooms[gameN][rn].getPlayer1();
+                    if(target == ss)
+                    {
+                        target = gamerooms[gameN][rn].getPlayer2();
+                    }
+
+                    string real = game[gameN][target]+msg;
+                    target.Send(Encoding.Default.GetBytes(real));
+
+                }
+
+                // 게임 내 정보 변화
+                //else
+                //{
+                //    int roomidx = int.Parse(sa[4].Split('/')[0]);
+                //    if (state == 2)
+                //    {
+                //        string ret = gamerooms[state][roomidx].nbResult(sa[4].Split('/')[1]);
+                //        ss.Send(Encoding.Default.GetBytes(ret));
+                //    }
+                //}
             }
             // 현재 연결 끊김
             else
